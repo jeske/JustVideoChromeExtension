@@ -3,17 +3,6 @@
 // Licensed as free open-source in the Public Domain
 
 // inspired by safeyoutube.net and Wessam El Mahdy
-// chrome.webRequest.onBeforeRequest.addListener(function (details) {
-//       if (!isAllowed(details)) {
-//         trace('blocking chrome.webRequest.onBeforeRequest.addListener', details);
-//         return {cancel: true};    // fail
-//       }
-//     },
-//     {
-//       urls: ['https://*.imgur.com/*'],
-//       types: ['main_frame', 'sub_frame', 'stylesheet', 'script', 'image', 'xmlhttprequest', 'media']
-//     },
-//     ['blocking']);      // NOTE: NOT getting request headers, the extension can only see urls and block them.
 
 chrome.tabs.onUpdated.addListener( function( tabId,  changeInfo,  tab) {
   if (tabId.tabId === -1) { // chrome empty tab
