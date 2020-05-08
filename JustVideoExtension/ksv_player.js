@@ -4,7 +4,6 @@
 // https://developers.google.com/youtube/iframe_api_reference
 
 window.onload = function () {
-<<<<<<< HEAD
     console.log("JustVideo:ksv_player.js:onload !");
 
     // hardcoded yt id for testing
@@ -32,20 +31,5 @@ window.onload = function () {
             const paramstr = Object.keys(params).map(k => `${k}=${params[k]}`).join('&');
             vidbox.src = `https://www.youtube.com/embed/${yt_id}?${paramstr}`;
         }
-=======
-
-    var yt_id = "LQMTClwRCrY";
-
-    console.log("onload:!?!?!?!");
-    var vidbox = document.getElementById("vidbox");
-    var title_box = document.getElementById("title_box");
-
-    if (vidbox) {
-        title_padding = title_box.clientHeight;
-        vidbox.src = "https://www.youtube.com/embed/" + yt_id;
-        console.log("title padding = " + this.title_padding);
-
-        window.onresize();
->>>>>>> parent of 350f4d8... make it actually use the video ID
     }
 };
