@@ -68,10 +68,10 @@ chrome.tabs.onUpdated.addListener( function( tabId,  changeInfo,  tab) {
     // if it's not a /watch url, send to a blank page
 
     // remove this page from history
-    //chrome.history.deleteUrl({url});  
+    chrome.history.deleteUrl({url});  
 
     var internalBlankPage = chrome.runtime.getURL("ksv_blank.html");
-    //chrome.tabs.update(tab.id, {url: internalBlankPage});
+    chrome.tabs.update(tab.id, {url: internalBlankPage});
   
   }
 
