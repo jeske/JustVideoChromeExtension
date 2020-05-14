@@ -9,6 +9,7 @@ var video_hosts = {
   "youtube.com" : 1,
   "googlevideo.com" : 1,
   "youtu.be" : 1,
+  "kidsafeyoutube.com" : 1,
   "youtube-nocookie.com" : 1,
   "youtube.googleapis.com" : 1,
   "youtubei.googleapis.com" : 1,
