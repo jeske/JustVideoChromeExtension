@@ -6,14 +6,14 @@
 
 
 var video_hosts = { 
-  "https://youtube.com/" : 1,
-  "https://googlevideo.com/" : 1,
-  "https://youtu.be/" : 1,
-  "https://youtube-nocookie.com/" : 1,
-  "https://youtube.googleapis.com/" : 1,
-  "https://youtubei.googleapis.com/" : 1,
-  "https://ytimg.com/" : 1,
-  "https://ytimg.l.google.com/" : 1 };
+  "youtube.com" : 1,
+  "googlevideo.com" : 1,
+  "youtu.be" : 1,
+  "youtube-nocookie.com" : 1,
+  "youtube.googleapis.com" : 1,
+  "youtubei.googleapis.com" : 1,
+  "ytimg.com" : 1,
+  "ytimg.l.google.com" : 1 };
 
 chrome.tabs.onUpdated.addListener( function( tabId,  changeInfo,  tab) {
   if (tabId.tabId === -1) { // chrome empty tab
@@ -21,27 +21,33 @@ chrome.tabs.onUpdated.addListener( function( tabId,  changeInfo,  tab) {
   }
 
   let url = tab.url;
-
-  console.log("JustVideo: ", url);
-  
+ 
   if (tab.pendingUrl) {
-    console.log(`kidsafeyoutube PENDING. ` , changeInfo, tab);
+    console.log(`JustVideo PENDING. ` , changeInfo, tab);
     url = tab.pendingUrl;
   } else {
-    console.log(`kidsafeyoutube actual. `, changeInfo, tab);
+    console.log(`JustVideo actual. `, changeInfo, tab);
   }
 
   // the extension manifest should only allow youtube requests, so we can assume a bunch of stuff
   const urlparse = new URL(url);
-  if ( !(urlparse.host in video_hosts) ) {
+
+  var host = urlparse.hostname;
+
+  // strip leading "www"
+  var match = /^www\.(.*)$/.exec(host);
+  if (match) {
+     host = match[1];
+  }
+  console.log("JustVideo host: ", host);
+
+  if ( !(host in video_hosts) ) {
+      console.log("JustVideo: not a video host", urlparse.host);
       return;  // not a video URL, fast fail
   }
   const yt_id = urlparse.searchParams.get('v');
 
-  // remove this page from history
-  chrome.history.deleteUrl({url});  
-
-  if ((urlarse.pathname == "/watch") && yt_id) {
+  if ((urlparse.pathname == "/watch") && yt_id) {
     // goto blocking URL
     console.log(`match! ${url} yt_id: '${yt_id}'`);
 
@@ -50,12 +56,23 @@ chrome.tabs.onUpdated.addListener( function( tabId,  changeInfo,  tab) {
       `ksv_player.html?yt_id=${yt_id}&nonce=${Math.random()}`);
     console.log(internalRedirectPage);
  
+  // remove this page from history
+  chrome.history.deleteUrl({url});  
+
+
     // replace the watch page with internal landing page
     chrome.tabs.update(tab.id, {url: internalRedirectPage});
+
+    
   } else {
     // if it's not a /watch url, send to a blank page
+
+    // remove this page from history
+    //chrome.history.deleteUrl({url});  
+
     var internalBlankPage = chrome.runtime.getURL("ksv_blank.html");
-    chrome.tabs.update(tab.id, {url: internalBlankPage});
+    //chrome.tabs.update(tab.id, {url: internalBlankPage});
+  
   }
 
 
