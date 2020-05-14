@@ -8,13 +8,17 @@
 var video_hosts = { 
   "youtube.com" : 1,
   "googlevideo.com" : 1,
-  "youtu.be" : 1,
-  "kidsafeyoutube.com" : 1,
+  "youtu.be" : 1,  
   "youtube-nocookie.com" : 1,
   "youtube.googleapis.com" : 1,
   "youtubei.googleapis.com" : 1,
   "ytimg.com" : 1,
-  "ytimg.l.google.com" : 1 };
+  "ytimg.l.google.com" : 1,
+  // we don't like youtube kids either... junk video.
+  "youtubekids.com" : 1,
+  // these are not real sites.. but block them anyway
+  "kidsyoutube.com" : 1,
+};
 
 chrome.tabs.onUpdated.addListener( function( tabId,  changeInfo,  tab) {
   if (tabId.tabId === -1) { // chrome empty tab
