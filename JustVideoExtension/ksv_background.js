@@ -4,45 +4,59 @@
 
 // inspired by safeyoutube.net and Wessam El Mahdy
 
+
+var video_hosts = { 
+  "https://youtube.com/" : 1,
+  "https://googlevideo.com/" : 1,
+  "https://youtu.be/" : 1,
+  "https://youtube-nocookie.com/" : 1,
+  "https://youtube.googleapis.com/" : 1,
+  "https://youtubei.googleapis.com/" : 1,
+  "https://ytimg.com/" : 1,
+  "https://ytimg.l.google.com/" : 1 };
+
 chrome.tabs.onUpdated.addListener( function( tabId,  changeInfo,  tab) {
   if (tabId.tabId === -1) { // chrome empty tab
     return true;
   }
 
-  // we use the title to detect if this navigation is happening in an iframe on our generated page.
-  // it's actually hard to detect if a change is an iframe page nav or a top level tab nav without using
-  // onBeforeRequest() ... which requires more permissions.
-  if (tab.title === 'Just Kids Youtube') {
-    return;
-  }
-
-  const is_top_level_nav = (tab.openerTabId===tab.id);
-
   let url = tab.url;
+
+  console.log("JustVideo: ", url);
+  
   if (tab.pendingUrl) {
-    console.log(`kidsafeyoutube PENDING. Is top level ${is_top_level_nav}` , changeInfo, tab);
+    console.log(`kidsafeyoutube PENDING. ` , changeInfo, tab);
     url = tab.pendingUrl;
   } else {
-    console.log(`kidsafeyoutube actual. Is top level ${is_top_level_nav}`, changeInfo, tab);
+    console.log(`kidsafeyoutube actual. `, changeInfo, tab);
   }
 
   // the extension manifest should only allow youtube requests, so we can assume a bunch of stuff
   const urlparse = new URL(url);
-  if (urlparse.protocol !== 'https:') {
-    debugger;
+  if ( !(urlparse.host in video_hosts) ) {
+      return;  // not a video URL, fast fail
   }
   const yt_id = urlparse.searchParams.get('v');
-  if (yt_id) {
+
+  // remove this page from history
+  chrome.history.deleteUrl({url});  
+
+  if ((urlarse.pathname == "/watch") && yt_id) {
+    // goto blocking URL
     console.log(`match! ${url} yt_id: '${yt_id}'`);
 
     // generate a random URL...
-    const internalRedirectPage = chrome.runtime.getURL(`ksv_player.html?yt_id=${yt_id}&nonce=${Math.random()}`);
+    const internalRedirectPage = chrome.runtime.getURL(
+      `ksv_player.html?yt_id=${yt_id}&nonce=${Math.random()}`);
     console.log(internalRedirectPage);
-
-    // remove this page from history
-    chrome.history.deleteUrl({url});
+ 
     // replace the watch page with internal landing page
     chrome.tabs.update(tab.id, {url: internalRedirectPage});
+  } else {
+    // if it's not a /watch url, send to a blank page
+    var internalBlankPage = chrome.runtime.getURL("ksv_blank.html");
+    chrome.tabs.update(tab.id, {url: internalBlankPage});
+  }
 
 
     // // get a safeyoutube link
@@ -54,8 +68,7 @@ chrome.tabs.onUpdated.addListener( function( tabId,  changeInfo,  tab) {
     //
     // };
     // x.send();
-
-  }
+  
 });
 
 
