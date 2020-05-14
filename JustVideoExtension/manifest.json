@@ -4,7 +4,17 @@
   "manifest_version": 2,
   "description": "Redirect Video Urls to a 'Just Video' wrapper page without addictive related videos to distract people (like my kids).",
 
-  "permissions": [ "tabs", "history" ],
+  "permissions": [ "tabs", "history",
+    "https://youtube.com/",
+    "https://googlevideo.com/",
+    "https://youtu.be/",
+    "https://youtube-nocookie.com/",
+    "https://youtube.googleapis.com/",
+    "https://youtubei.googleapis.com/",
+    "https://ytimg.com/",
+    "https://ytimg.l.google.com/",
+    "http://safeyoutube.net/"],
+
   "icons" : {
    "16" : "ksv-icon-40x40.png",
    "48" : "ksv-icon-40x40.png",
